@@ -1,0 +1,296 @@
+<div class="container">
+  <!-- Hero Section -->
+  <section class="hero" role="banner">
+    <div class="hero-content">
+      <h1 class="hero-title">
+        <span class="hero-emoji">📋</span>
+        Welcome to BluePaste
+      </h1>
+      <p class="hero-subtitle">
+        Anonymous, censorship-free paste sharing with multi-language support
+      </p>
+      <div class="hero-features">
+        <span class="hero-feature">🔒 Anonymous</span>
+        <span class="hero-feature">🌍 Multi-language</span>
+        <span class="hero-feature">🚀 Fast</span>
+        <span class="hero-feature">🎨 Syntax Highlighting</span>
+      </div>
+    </div>
+  </section>
+
+  <!-- Main Form -->
+  <section class="paste-section" role="main">
+    <div class="paste-form-container">
+      <form id="paste-form" class="paste-form" novalidate>
+        <!-- Language Selection -->
+        <div class="form-group">
+          <label for="language" class="form-label">
+            <span class="label-icon">🌐</span>
+            Language (optional):
+          </label>
+          <select
+            id="language"
+            name="language"
+            class="form-control form-select"
+            aria-describedby="language-help"
+          >
+            <option value="">Auto-detect</option>
+            <% languages.forEach(lang => { %>
+            <option value="<%= lang %>"><%= lang %></option>
+            <% }); %>
+          </select>
+          <small id="language-help" class="form-help"
+            >Select a language for better syntax highlighting</small
+          >
+        </div>
+
+        <!-- Content Input -->
+        <div class="form-group">
+          <label for="content" class="form-label">
+            <span class="label-icon">📝</span>
+            Content:
+          </label>
+          <div class="textarea-container">
+            <textarea
+              id="content"
+              name="content"
+              class="form-control content-input"
+              placeholder="Paste your content here...
+
+📝 Supports all languages and Unicode characters
+🔒 Completely anonymous - no tracking  
+🌍 Automatic language detection
+🎨 Syntax highlighting for code
+📱 Mobile-friendly interface
+
+Start typing or paste your content..."
+              maxlength="<%= maxSize %>"
+              rows="15"
+              required
+              aria-describedby="content-help char-counter"
+            ></textarea>
+            <div class="textarea-overlay">
+              <div class="line-numbers" aria-hidden="true"></div>
+            </div>
+          </div>
+          <div class="form-footer">
+            <small id="content-help" class="form-help"
+              >Supports up to <%= maxSize.toLocaleString() %> characters</small
+            >
+            <div class="char-counter" id="char-counter" aria-live="polite">
+              <span id="char-count">0</span> / <%= maxSize.toLocaleString() %>
+            </div>
+          </div>
+        </div>
+
+        <!-- Form Actions -->
+        <div class="form-actions">
+          <button
+            type="submit"
+            id="submit-btn"
+            class="btn btn-primary btn-large"
+          >
+            <span class="btn-icon">🚀</span>
+            <span class="btn-text">Create Paste</span>
+            <span class="btn-spinner" style="display: none" aria-hidden="true">
+              <span class="spinner"></span>
+              Creating...
+            </span>
+          </button>
+          <button type="button" id="clear-btn" class="btn btn-secondary">
+            <span class="btn-icon">🗑️</span>
+            Clear
+          </button>
+          <button type="button" id="preview-toggle" class="btn btn-outline">
+            <span class="btn-icon">👁️</span>
+            <span id="preview-text">Preview</span>
+          </button>
+        </div>
+      </form>
+
+      <!-- Live Preview -->
+      <div
+        id="preview-container"
+        class="preview-container"
+        style="display: none"
+        role="region"
+        aria-labelledby="preview-title"
+      >
+        <div class="preview-header">
+          <h3 id="preview-title" class="preview-title">
+            <span class="preview-icon">👁️</span>
+            Live Preview
+          </h3>
+          <button
+            id="preview-close"
+            class="preview-close"
+            aria-label="Close preview"
+          >
+            ✕
+          </button>
+        </div>
+        <div class="preview-content">
+          <pre><code id="preview-code" class="hljs"></code></pre>
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <!-- Result Container -->
+  <section
+    id="result-container"
+    class="result-container"
+    style="display: none"
+    role="region"
+    aria-labelledby="result-title"
+  >
+    <div class="result-content">
+      <div class="result-header">
+        <h2 id="result-title" class="result-title">
+          <span class="result-icon">🎉</span>
+          Paste Created Successfully!
+        </h2>
+        <p class="result-subtitle">
+          Your paste has been created and is ready to share
+        </p>
+      </div>
+
+      <div class="result-urls">
+        <div class="url-group">
+          <label for="view-url" class="url-label">
+            <span class="label-icon">👀</span>
+            View URL:
+          </label>
+          <div class="url-input-group">
+            <input
+              type="text"
+              id="view-url"
+              class="url-input"
+              readonly
+              aria-describedby="view-url-help"
+            />
+            <button
+              class="copy-btn"
+              data-target="view-url"
+              aria-label="Copy view URL"
+            >
+              <span class="copy-icon">📋</span>
+              Copy
+            </button>
+          </div>
+          <small id="view-url-help" class="form-help"
+            >Share this URL to let others view your paste</small
+          >
+        </div>
+
+        <div class="url-group">
+          <label for="raw-url" class="url-label">
+            <span class="label-icon">📄</span>
+            Raw URL:
+          </label>
+          <div class="url-input-group">
+            <input
+              type="text"
+              id="raw-url"
+              class="url-input"
+              readonly
+              aria-describedby="raw-url-help"
+            />
+            <button
+              class="copy-btn"
+              data-target="raw-url"
+              aria-label="Copy raw URL"
+            >
+              <span class="copy-icon">📋</span>
+              Copy
+            </button>
+          </div>
+          <small id="raw-url-help" class="form-help"
+            >Direct link to raw text content</small
+          >
+        </div>
+      </div>
+
+      <div class="result-actions">
+        <a
+          id="view-paste-link"
+          class="btn btn-primary"
+          target="_blank"
+          rel="noopener noreferrer"
+        >
+          <span class="btn-icon">👀</span>
+          View Paste
+        </a>
+        <button id="create-another" class="btn btn-secondary">
+          <span class="btn-icon">➕</span>
+          Create Another
+        </button>
+        <button id="share-paste" class="btn btn-outline">
+          <span class="btn-icon">🔗</span>
+          Share
+        </button>
+      </div>
+    </div>
+  </section>
+
+  <!-- Features Section -->
+  <section class="features" role="region" aria-labelledby="features-title">
+    <div class="features-container">
+      <h2 id="features-title" class="features-title">Why Choose BluePaste?</h2>
+      <div class="feature-grid">
+        <div class="feature-card">
+          <div class="feature-icon" aria-hidden="true">🔒</div>
+          <h3 class="feature-title">Anonymous</h3>
+          <p class="feature-description">
+            No accounts, no tracking, complete privacy protection
+          </p>
+        </div>
+        <div class="feature-card">
+          <div class="feature-icon" aria-hidden="true">🌍</div>
+          <h3 class="feature-title">Multi-language</h3>
+          <p class="feature-description">
+            Support for all programming and human languages worldwide
+          </p>
+        </div>
+        <div class="feature-card">
+          <div class="feature-icon" aria-hidden="true">🚀</div>
+          <h3 class="feature-title">Fast & Reliable</h3>
+          <p class="feature-description">
+            Lightning-fast performance with reliable uptime
+          </p>
+        </div>
+        <div class="feature-card">
+          <div class="feature-icon" aria-hidden="true">🎨</div>
+          <h3 class="feature-title">Syntax Highlighting</h3>
+          <p class="feature-description">
+            Beautiful code highlighting with multiple themes
+          </p>
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <!-- Quick Tips -->
+  <section class="tips" role="region" aria-labelledby="tips-title">
+    <div class="tips-container">
+      <h2 id="tips-title" class="tips-title">
+        <span class="tips-icon">💡</span>
+        Quick Tips
+      </h2>
+      <div class="tips-list">
+        <div class="tip-item">
+          <span class="tip-key">Ctrl + Enter</span>
+          <span class="tip-description">Submit your paste</span>
+        </div>
+        <div class="tip-item">
+          <span class="tip-key">Ctrl + K</span>
+          <span class="tip-description">Focus content area</span>
+        </div>
+        <div class="tip-item">
+          <span class="tip-key">Escape</span>
+          <span class="tip-description">Clear form or close modals</span>
+        </div>
+      </div>
+    </div>
+  </section>
+</div>

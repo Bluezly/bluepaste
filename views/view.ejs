@@ -1,0 +1,303 @@
+<div class="container">
+  <!-- Paste Header -->
+  <header class="paste-header" role="banner">
+    <div class="paste-meta">
+      <h1 class="paste-title">
+        <span class="paste-icon">📋</span>
+        Paste <code class="paste-id"><%= pasteId %></code>
+      </h1>
+      <div class="meta-info" role="group" aria-label="Paste information">
+        <div class="meta-item">
+          <span class="meta-icon" aria-hidden="true">🕒</span>
+          <span class="meta-label">Created:</span>
+          <time datetime="<%= paste.timestamp.toISOString() %>">
+            <%= paste.timestamp.toLocaleString() %>
+          </time>
+        </div>
+        <div class="meta-item">
+          <span class="meta-icon" aria-hidden="true">👀</span>
+          <span class="meta-label">Views:</span>
+          <span class="meta-value"><%= paste.views.toLocaleString() %></span>
+        </div>
+        <div class="meta-item">
+          <span class="meta-icon" aria-hidden="true">📝</span>
+          <span class="meta-label">Language:</span>
+          <span class="meta-value"
+            ><%= paste.language || 'Auto-detected' %></span
+          >
+        </div>
+        <div class="meta-item">
+          <span class="meta-icon" aria-hidden="true">📏</span>
+          <span class="meta-label">Size:</span>
+          <span class="meta-value"
+            ><%= paste.length.toLocaleString() %> chars</span
+          >
+        </div>
+        <% if (paste.text_direction === 'rtl') { %>
+        <div class="meta-item">
+          <span class="meta-icon" aria-hidden="true">↩️</span>
+          <span class="meta-label">RTL Text</span>
+        </div>
+        <% } %>
+      </div>
+    </div>
+
+    <div class="paste-actions" role="toolbar" aria-label="Paste actions">
+      <button
+        class="action-btn copy-content-btn"
+        data-content="<%= paste.content %>"
+        title="Copy content to clipboard"
+      >
+        <span class="action-icon">📋</span>
+        <span class="action-text">Copy Content</span>
+      </button>
+      <a
+        href="/raw/<%= pasteId %>"
+        class="action-btn"
+        target="_blank"
+        rel="noopener noreferrer"
+        title="View raw text"
+      >
+        <span class="action-icon">📄</span>
+        <span class="action-text">Raw View</span>
+      </a>
+      <button
+        id="qr-toggle"
+        class="action-btn"
+        title="Show QR code for mobile sharing"
+      >
+        <span class="action-icon">📱</span>
+        <span class="action-text">QR Code</span>
+      </button>
+      <button id="share-btn" class="action-btn" title="Share this paste">
+        <span class="action-icon">🔗</span>
+        <span class="action-text">Share</span>
+      </button>
+      <button
+        id="download-btn"
+        class="action-btn"
+        title="Download as text file"
+      >
+        <span class="action-icon">💾</span>
+        <span class="action-text">Download</span>
+      </button>
+    </div>
+  </header>
+
+  <!-- QR Code Container -->
+  <section
+    id="qr-container"
+    class="qr-container"
+    style="display: none"
+    role="region"
+    aria-labelledby="qr-title"
+  >
+    <div class="qr-content">
+      <div class="qr-header">
+        <h2 id="qr-title" class="qr-title">
+          <span class="qr-icon">📱</span>
+          Share QR Code
+        </h2>
+        <button id="qr-close" class="qr-close" aria-label="Close QR code">
+          ✕
+        </button>
+      </div>
+      <div class="qr-body">
+        <img
+          src="<%= qrCode %>"
+          alt="QR Code for paste <%= pasteId %>"
+          class="qr-image"
+          loading="lazy"
+        />
+        <p class="qr-description">
+          Scan this QR code to access this paste on mobile devices
+        </p>
+        <div class="qr-actions">
+          <button id="qr-download" class="btn btn-outline">
+            <span class="btn-icon">💾</span>
+            Download QR
+          </button>
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <!-- Main Paste Content -->
+  <main class="paste-content" dir="<%= paste.text_direction %>" role="main">
+    <div class="content-wrapper">
+      <div class="content-header">
+        <div class="content-controls">
+          <button
+            id="line-numbers-toggle"
+            class="control-btn"
+            title="Toggle line numbers"
+          >
+            <span class="control-icon">🔢</span>
+            Lines
+          </button>
+          <button
+            id="word-wrap-toggle"
+            class="control-btn"
+            title="Toggle word wrap"
+          >
+            <span class="control-icon">↩️</span>
+            Wrap
+          </button>
+          <button
+            id="fullscreen-toggle"
+            class="control-btn"
+            title="Toggle fullscreen"
+          >
+            <span class="control-icon">🔍</span>
+            Fullscreen
+          </button>
+        </div>
+        <div class="content-info">
+          <span class="language-badge"
+            ><%= paste.language || 'Plain Text' %></span
+          >
+        </div>
+      </div>
+      <div class="code-container" id="code-container">
+        <pre
+          class="code-block"
+        ><code class="hljs language-<%= paste.language %>" id="paste-code"><%- highlightedContent %></code></pre>
+      </div>
+    </div>
+  </main>
+
+  <!-- Paste Footer -->
+  <footer class="paste-footer" role="contentinfo">
+    <div class="footer-actions">
+      <a href="/" class="btn btn-primary">
+        <span class="btn-icon">➕</span>
+        Create New Paste
+      </a>
+      <button id="fork-paste" class="btn btn-secondary">
+        <span class="btn-icon">🍴</span>
+        Fork This Paste
+      </button>
+    </div>
+
+    <div class="share-section" role="region" aria-labelledby="share-title">
+      <h3 id="share-title" class="share-title">
+        <span class="share-icon">🔗</span>
+        Share this paste
+      </h3>
+      <div class="share-urls">
+        <div class="url-group">
+          <label for="share-url" class="url-label">
+            <span class="label-icon">🔗</span>
+            Direct link:
+          </label>
+          <div class="url-input-group">
+            <input
+              type="text"
+              id="share-url"
+              class="url-input"
+              value="<%= shareUrl %>"
+              readonly
+              aria-describedby="share-url-help"
+            />
+            <button
+              class="copy-btn"
+              data-target="share-url"
+              aria-label="Copy direct link"
+            >
+              <span class="copy-icon">📋</span>
+            </button>
+          </div>
+          <small id="share-url-help" class="form-help"
+            >Share this link to view the paste</small
+          >
+        </div>
+
+        <div class="url-group">
+          <label for="raw-share-url" class="url-label">
+            <span class="label-icon">📄</span>
+            Raw text:
+          </label>
+          <div class="url-input-group">
+            <input
+              type="text"
+              id="raw-share-url"
+              class="url-input"
+              value="<%= shareUrl.replace('/view/', '/raw/') %>"
+              readonly
+              aria-describedby="raw-share-url-help"
+            />
+            <button
+              class="copy-btn"
+              data-target="raw-share-url"
+              aria-label="Copy raw text link"
+            >
+              <span class="copy-icon">📋</span>
+            </button>
+          </div>
+          <small id="raw-share-url-help" class="form-help"
+            >Direct link to raw text content</small
+          >
+        </div>
+      </div>
+
+      <div class="social-share">
+        <h4 class="social-title">Quick Share:</h4>
+        <div class="social-buttons">
+          <button
+            class="social-btn"
+            data-platform="twitter"
+            title="Share on Twitter"
+          >
+            <span class="social-icon">🐦</span>
+            Twitter
+          </button>
+          <button
+            class="social-btn"
+            data-platform="telegram"
+            title="Share on Telegram"
+          >
+            <span class="social-icon">✈️</span>
+            Telegram
+          </button>
+          <button
+            class="social-btn"
+            data-platform="whatsapp"
+            title="Share on WhatsApp"
+          >
+            <span class="social-icon">💬</span>
+            WhatsApp
+          </button>
+        </div>
+      </div>
+    </div>
+  </footer>
+</div>
+
+<!-- Fullscreen Modal -->
+<div
+  id="fullscreen-modal"
+  class="fullscreen-modal"
+  style="display: none"
+  role="dialog"
+  aria-labelledby="fullscreen-title"
+  aria-modal="true"
+>
+  <div class="fullscreen-header">
+    <h2 id="fullscreen-title" class="fullscreen-title">
+      <span class="fullscreen-icon">📋</span>
+      Paste <%= pasteId %>
+    </h2>
+    <button
+      id="fullscreen-close"
+      class="fullscreen-close"
+      aria-label="Exit fullscreen"
+    >
+      ✕
+    </button>
+  </div>
+  <div class="fullscreen-content">
+    <pre
+      class="fullscreen-code"
+    ><code class="hljs language-<%= paste.language %>"><%- highlightedContent %></code></pre>
+  </div>
+</div>

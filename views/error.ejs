@@ -1,0 +1,91 @@
+<div class="container">
+  <section class="error-section" role="main">
+    <div class="error-container">
+      <div class="error-content">
+        <div class="error-visual">
+          <div class="error-icon" aria-hidden="true">
+            <% if (title && title.includes('404')) { %> 🔍 <% } else if (title
+            && title.includes('500')) { %> ⚠️ <% } else if (title &&
+            title.includes('403')) { %> 🚫 <% } else { %> 😞 <% } %>
+          </div>
+          <div class="error-animation">
+            <div class="error-pulse"></div>
+          </div>
+        </div>
+
+        <div class="error-details">
+          <h1 class="error-title">
+            <%= title || 'Oops! Something went wrong' %>
+          </h1>
+          <p class="error-message">
+            <%= error || 'An unexpected error occurred. Please try again later.'
+            %>
+          </p>
+
+          <% if (title && title.includes('404')) { %>
+          <div class="error-suggestions">
+            <h3 class="suggestions-title">What you can do:</h3>
+            <ul class="suggestions-list">
+              <li>Check if the paste URL is correct</li>
+              <li>The paste might have expired or been deleted</li>
+              <li>Try creating a new paste instead</li>
+            </ul>
+          </div>
+          <% } else if (title && title.includes('500')) { %>
+          <div class="error-suggestions">
+            <h3 class="suggestions-title">This is on us:</h3>
+            <ul class="suggestions-list">
+              <li>Our servers are experiencing issues</li>
+              <li>Please try again in a few moments</li>
+              <li>If the problem persists, check our status page</li>
+            </ul>
+          </div>
+          <% } %>
+
+          <div class="error-actions">
+            <a href="/" class="btn btn-primary">
+              <span class="btn-icon">🏠</span>
+              Go Home
+            </a>
+            <button onclick="history.back()" class="btn btn-secondary">
+              <span class="btn-icon">⬅️</span>
+              Go Back
+            </button>
+            <button onclick="window.location.reload()" class="btn btn-outline">
+              <span class="btn-icon">🔄</span>
+              Retry
+            </button>
+          </div>
+        </div>
+      </div>
+
+      <div class="error-footer">
+        <div class="help-section">
+          <h3 class="help-title">
+            <span class="help-icon">💡</span>
+            Need Help?
+          </h3>
+          <div class="help-options">
+            <a href="/" class="help-link">
+              <span class="help-icon">➕</span>
+              Create a New Paste
+            </a>
+            <a href="/health" class="help-link">
+              <span class="help-icon">📊</span>
+              Check Service Status
+            </a>
+          </div>
+        </div>
+
+        <div class="error-code">
+          <small class="error-timestamp">
+            Error occurred at:
+            <time datetime="<%= new Date().toISOString() %>"
+              ><%= new Date().toLocaleString() %></time
+            >
+          </small>
+        </div>
+      </div>
+    </div>
+  </section>
+</div>

@@ -1,0 +1,31 @@
+{
+  "name": "bluepaste",
+  "version": "1.0.0",
+  "description": "Censorship-free, multi-language, anonymous paste-sharing platform",
+  "main": "index.js",
+  "scripts": {
+    "start": "node index.js",
+    "dev": "nodemon index.js"
+  },
+  "dependencies": {
+    "express": "^4.18.2",
+    "ejs": "^3.1.9",
+    "express-ejs-layouts": "^2.5.1",
+    "mongodb": "^6.3.0",
+    "nanoid": "^3.3.7",
+    "highlight.js": "^11.9.0",
+    "sanitize-html": "^2.11.0",
+    "express-rate-limit": "^7.1.5",
+    "qrcode": "^1.5.3",
+    "dotenv": "^16.3.1",
+    "twemoji": "^14.0.2",
+    "compression": "^1.7.4",
+    "helmet": "^7.1.0"
+  },
+  "devDependencies": {
+    "nodemon": "^3.0.2"
+  },
+  "keywords": ["paste", "anonymous", "sharing", "censorship-free"],
+  "author": "BluePaste",
+  "license": "MIT"
+}
