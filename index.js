@@ -10,7 +10,7 @@ const helmet = require("helmet");
 const expressLayouts = require("express-ejs-layouts");
 const path = require("path");
 require("dotenv").config();
-s
+
 const app = express();
 const PORT = process.env.PORT || 3000;
 const MONGO_URIS = process.env.MONGO_URIS?.split(",") || [
